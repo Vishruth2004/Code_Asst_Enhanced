@@ -1,0 +1,46 @@
+# render.yaml — Render Blueprint
+# Defines both services so Render can provision them from this single file.
+# Docs: https://render.com/docs/blueprint-spec
+
+services:
+
+  # ── 1. Python Flask API (Web Service) ─────────────────────────────────────
+  - type: web
+    name: codecraft-api
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn model_server_2:app --bind 0.0.0.0:$PORT --workers 2 --timeout 120
+    plan: free           # upgrade to starter/standard for always-on behaviour
+    envVars:
+      - key: AWS_ACCESS_KEY_ID
+        sync: false      # you'll paste this manually in the Render dashboard
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
+      - key: AWS_DEFAULT_REGION
+        value: us-east-1
+      # Set this to the Render URL of the static frontend after it's created,
+      # e.g. https://codecraft-frontend.onrender.com
+      # Leave blank initially — update after both services are live.
+      - key: CORS_ORIGIN
+        sync: false
+      - key: FLASK_ENV
+        value: production
+
+  # ── 2. React Frontend (Static Site) ───────────────────────────────────────
+  - type: web
+    name: codecraft-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: build
+    pullRequestPreviewsEnabled: false
+    envVars:
+      # Set this to the Render URL of codecraft-api after it's created,
+      # e.g. https://codecraft-api.onrender.com
+      - key: REACT_APP_API_URL
+        sync: false      # you'll paste this manually in the Render dashboard
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
