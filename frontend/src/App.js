@@ -128,7 +128,7 @@ const markdownComponents = {
 };
 
 /* ─── Constants ───────────────────────────────────────────────────────────── */
-const MAX_REQUESTS = 150;
+const MAX_REQUESTS = 15;
 // In production (Render), set REACT_APP_API_URL to your Flask service URL.
 // Locally, Flask runs on 8000 directly — no Node.js proxy needed.
 const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:8000';
