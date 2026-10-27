@@ -18,7 +18,7 @@ brt = boto3.client(
 )
 
 # ── Global request quota ───────────────────────────────────────────────────
-MAX_REQUESTS = 150
+MAX_REQUESTS = 15
 COUNTER_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'request_count.json')
 
 def _get_count() -> int:
